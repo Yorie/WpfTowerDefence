@@ -43,12 +43,26 @@ namespace WpfTowerDefence
             }
 
             var selectedTowerType = towerType_listBox.SelectedItem.ToString();
-            if (selectedTowerType != null && towerManager != null && cell.isGround)
+            if (!string.IsNullOrEmpty(selectedTowerType) && towerManager != null && cell.isGround)
             {
                 switch (selectedTowerType)
                 {
                     case "ArcherTower":
                         {
+                            /*
+                              TODO
+                              Would be better:
+                              
+                              towerToAdd = new ArcherTower(cell, canvasMap, player);
+                              
+                              and below outside of switch:
+                              if (towerToAdd.Price < player.Money) 
+                              {
+                                // Not enough money warning.
+                              }
+                              
+                              By that way we move out price check logic at exactly one place and avoid making complex conditions in each case lable of the switch.
+                             */
                             towerToAdd = (player.Money >= ArcherTower.price) ? new ArcherTower(cell, canvasMap, player) : null;
                             break;
                         }
