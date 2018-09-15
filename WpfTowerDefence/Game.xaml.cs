@@ -30,7 +30,7 @@ namespace WpfTowerDefence
         };
 
         Cell firstCell;
-        static int fieldHeight = 6, fieldWight = 9;
+        static int fieldHeight = 6, fieldWidth = 9;
         Cell[,] allCells = new Cell[fieldHeight, fieldWight];
         List<Cell> wayPoints = new List<Cell>();
         int currWayX, currWayY;
@@ -83,6 +83,7 @@ namespace WpfTowerDefence
             MoneyLabel.Content = money; ;
         }
 
+        // TODO: CLEAN UP CODE
         //private Task TestAsync(CancellationToken token)
         //{
         //    return Task.Factory.StartNew(() => DT_Tick(new Object(), token));
@@ -120,10 +121,10 @@ namespace WpfTowerDefence
         private void CreateLevel()
         {
             for (int i = 0; i < fieldHeight; i++)
-                for (int k = 0; k < fieldWight; k++)
+                for (int k = 0; k < fieldWidth; k++)
                 {
-                    int GroundIndex = int.Parse(path[i].ToCharArray()[k].ToString());
-                    var color = (GroundIndex == 0) ? Brushes.Brown : Brushes.Gray;
+                    int groundIndex = int.Parse(path[i].ToCharArray()[k].ToString());
+                    var color = (groundIndex == 0) ? Brushes.Brown : Brushes.Gray;
                     CreateCell(color, GroundIndex, k, i);
                 }
         }
@@ -189,6 +190,39 @@ namespace WpfTowerDefence
             while (true)
             {
                 currWayGo = null;
+                /* Could significiantly simplify condition branches:
+                   int[] x = [-1, 1, 0, 0];
+                   int[] y = [0, 0, -1, 1];
+                   bool wayFound = false;
+                   for (int i = 0; i < x.Length; ++i)
+                   {
+                        int offsetX = currWayX + x[i];
+                        int offsetY = currWayY + y[i];
+                        
+                        if (offsetX < 0 || offsetX >= fieldWidth || offsetY < 0 || offsetY >= fieldHeight)
+                        {
+                            continue;
+                        }
+                        
+                        if (allCells[offsetY, offsetX].isGround && !wayPoints.Exists(x => x == allCells[offsetY, offsetX]))
+                        {
+                            currWayGo = allCells[offsetY, offsetX];
+                            currWayX += x[i];
+                            currWayY += y[i];
+                            Debug.WriteLine($"Move ({x[i]}, {y[i]}).");
+                            wayFound = true;
+                            
+                            break; // Exit coords cycle
+                        }
+                   }
+                   
+                   if (!wayFound)
+                   {
+                        break; // Exit main cycle
+                   }
+                   
+                   Not sure about correctness, but idea behind should be clear :)
+                 */
 
                 if (currWayX > 0 && !allCells[currWayY, currWayX - 1].isGround &&
                     !wayPoints.Exists(x => x == allCells[currWayY, currWayX - 1]))
